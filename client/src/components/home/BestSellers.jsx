@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import ProductCard from '../product/ProductCard'
 import { SkeletonCard } from '../ui/Skeleton'
 import { Flame, ArrowRight } from 'lucide-react'
+import { FALLBACK_PRODUCTS } from '../../data/fallbackData'
 import api from '../../services/api'
 
 export default function BestSellers() {
@@ -10,17 +11,35 @@ export default function BestSellers() {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
+    let isMounted = true
     api.get('/products/bestsellers')
       .then((res) => {
-        setProducts(res.data || [])
+        if (isMounted) {
+          if (Array.isArray(res.data) && res.data.length > 0) {
+            setProducts(res.data)
+          } else {
+            setProducts(FALLBACK_PRODUCTS.filter((p) => p.isBestSeller).slice(0, 4))
+          }
+        }
       })
       .catch(() => {
-        setProducts([])
+        if (isMounted) {
+          // Graceful fallback to rich mock data if backend not connected
+          setProducts(FALLBACK_PRODUCTS.filter((p) => p.isBestSeller).slice(0, 4))
+        }
       })
-      .finally(() => setLoading(false))
+      .finally(() => {
+        if (isMounted) setLoading(false)
+      })
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
-  if (!loading && products.length === 0) return null
+  const displayList = Array.isArray(products) && products.length > 0
+    ? products
+    : FALLBACK_PRODUCTS.filter((p) => p.isBestSeller).slice(0, 4)
 
   return (
     <section className="mb-16">
@@ -42,7 +61,7 @@ export default function BestSellers() {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         {loading
           ? [...Array(4)].map((_, i) => <SkeletonCard key={i} />)
-          : products.map((p) => (
+          : displayList.map((p) => (
               <ProductCard key={p._id || p.id} product={p} />
             ))}
       </div>

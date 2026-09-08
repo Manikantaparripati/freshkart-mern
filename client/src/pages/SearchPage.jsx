@@ -7,6 +7,7 @@ import ProductSort from '../components/product/ProductSort'
 import { SkeletonCard } from '../components/ui/Skeleton'
 import EmptyState from '../components/ui/EmptyState'
 import Pagination from '../components/ui/Pagination'
+import { FALLBACK_PRODUCTS } from '../data/fallbackData'
 import api from '../services/api'
 
 export default function SearchPage() {
@@ -40,15 +41,32 @@ export default function SearchPage() {
     }
     if (sort) params.sort = sort
 
+    const applyFallback = () => {
+      let match = FALLBACK_PRODUCTS.filter((p) =>
+        p.name.toLowerCase().includes(q.toLowerCase()) ||
+        p.category?.name.toLowerCase().includes(q.toLowerCase()) ||
+        p.tags?.some((t) => t.toLowerCase().includes(q.toLowerCase()))
+      )
+      if (sort === 'price') match.sort((a, b) => a.price - b.price)
+      if (sort === '-price') match.sort((a, b) => b.price - a.price)
+      if (sort === '-rating') match.sort((a, b) => b.rating - a.rating)
+      setProducts(match)
+      setTotal(match.length)
+      setPages(1)
+    }
+
     api.get('/products', { params })
       .then((res) => {
-        setProducts(res.data.products || [])
-        setTotal(res.data.total || 0)
-        setPages(res.data.pages || 1)
+        if (Array.isArray(res.data?.products) && res.data.products.length > 0) {
+          setProducts(res.data.products)
+          setTotal(res.data.total || res.data.products.length)
+          setPages(res.data.pages || 1)
+        } else {
+          applyFallback()
+        }
       })
       .catch(() => {
-        setProducts([])
-        setTotal(0)
+        applyFallback()
       })
       .finally(() => setLoading(false))
   }, [q, page, sort])

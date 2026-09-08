@@ -10,12 +10,14 @@ import { SkeletonCard } from '../components/ui/Skeleton'
 import EmptyState from '../components/ui/EmptyState'
 import api from '../services/api'
 
+import { FALLBACK_PRODUCTS, FALLBACK_CATEGORIES } from '../data/fallbackData'
+
 export default function ProductsPage() {
   const { slug } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [products, setProducts] = useState([])
-  const [categories, setCategories] = useState([])
+  const [categories, setCategories] = useState(FALLBACK_CATEGORIES)
   const [loading, setLoading] = useState(true)
   const [total, setTotal] = useState(0)
   const [pages, setPages] = useState(1)
@@ -40,8 +42,14 @@ export default function ProductsPage() {
   // Fetch categories for filter sidebar
   useEffect(() => {
     api.get('/categories')
-      .then((res) => setCategories(res.data))
-      .catch(() => {})
+      .then((res) => {
+        if (Array.isArray(res.data) && res.data.length > 0) {
+          setCategories(res.data)
+        }
+      })
+      .catch(() => {
+        setCategories(FALLBACK_CATEGORIES)
+      })
   }, [])
 
   // Fetch products whenever filters/page/slug change
@@ -53,20 +61,40 @@ export default function ProductsPage() {
     if (minPrice) params.minPrice = minPrice
     if (maxPrice) params.maxPrice = maxPrice
 
+    const applyFallback = () => {
+      let filtered = [...FALLBACK_PRODUCTS]
+      if (slug) {
+        filtered = filtered.filter((p) => p.category?.slug === slug)
+      }
+      if (minPrice) filtered = filtered.filter((p) => p.price >= Number(minPrice))
+      if (maxPrice) filtered = filtered.filter((p) => p.price <= Number(maxPrice))
+      if (sort === 'price') filtered.sort((a, b) => a.price - b.price)
+      if (sort === '-price') filtered.sort((a, b) => b.price - a.price)
+      if (sort === '-rating') filtered.sort((a, b) => b.rating - a.rating)
+      setProducts(filtered)
+      setTotal(filtered.length)
+      setPages(1)
+    }
+
     // If we have a category slug, resolve it first
     const fetchProducts = async () => {
       try {
         if (slug) {
           const catRes = await api.get(`/categories/${slug}`)
-          params.category = catRes.data._id
+          if (catRes.data?._id) {
+            params.category = catRes.data._id
+          }
         }
         const res = await api.get('/products', { params })
-        setProducts(res.data.products || [])
-        setTotal(res.data.total || 0)
-        setPages(res.data.pages || 1)
+        if (Array.isArray(res.data?.products) && res.data.products.length > 0) {
+          setProducts(res.data.products)
+          setTotal(res.data.total || res.data.products.length)
+          setPages(res.data.pages || 1)
+        } else {
+          applyFallback()
+        }
       } catch {
-        setProducts([])
-        setTotal(0)
+        applyFallback()
       } finally {
         setLoading(false)
       }

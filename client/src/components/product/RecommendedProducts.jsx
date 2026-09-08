@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ProductCard from './ProductCard'
 import { SkeletonCard } from '../ui/Skeleton'
+import { FALLBACK_PRODUCTS } from '../../data/fallbackData'
 import api from '../../services/api'
 
 export default function RecommendedProducts({ categoryId, productId }) {
@@ -9,14 +10,36 @@ export default function RecommendedProducts({ categoryId, productId }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!categoryId) return
+    let isMounted = true
     api.get('/products/recommended', { params: { categoryId, productId } })
-      .then(res => setProducts(res.data))
-      .catch(() => {})
-      .finally(() => setLoading(false))
+      .then((res) => {
+        if (isMounted) {
+          if (Array.isArray(res.data) && res.data.length > 0) {
+            setProducts(res.data)
+          } else {
+            setProducts(FALLBACK_PRODUCTS.filter((p) => p._id !== productId).slice(0, 4))
+          }
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setProducts(FALLBACK_PRODUCTS.filter((p) => p._id !== productId).slice(0, 4))
+        }
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false)
+      })
+
+    return () => {
+      isMounted = false
+    }
   }, [categoryId, productId])
 
-  if (!loading && products.length === 0) return null
+  const displayList = Array.isArray(products) && products.length > 0
+    ? products
+    : FALLBACK_PRODUCTS.filter((p) => p._id !== productId).slice(0, 4)
+
+  if (!loading && displayList.length === 0) return null
 
   return (
     <section className="py-10">
@@ -32,8 +55,7 @@ export default function RecommendedProducts({ categoryId, productId }) {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {loading
           ? [...Array(4)].map((_, i) => <SkeletonCard key={i} />)
-          : products.map(p => <ProductCard key={p._id} product={p} />)
-        }
+          : displayList.map((p) => <ProductCard key={p._id || p.id} product={p} />)}
       </div>
     </section>
   )

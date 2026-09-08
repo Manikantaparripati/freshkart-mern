@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Search, X, Loader2, ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useDebounce } from '../../hooks/useDebounce'
+import { FALLBACK_PRODUCTS } from '../../data/fallbackData'
 import api from '../../services/api'
 
 export default function SearchBar() {
@@ -23,15 +24,28 @@ export default function SearchBar() {
     let active = true
     setLoading(true)
 
+    const fallbackMatch = () => {
+      const match = FALLBACK_PRODUCTS.filter((p) =>
+        p.name.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
+        p.tags?.some((t) => t.toLowerCase().includes(debouncedQuery.toLowerCase()))
+      ).slice(0, 5)
+      setSuggestions(match)
+      setIsOpen(true)
+    }
+
     api.get('/products/search', { params: { q: debouncedQuery.trim() } })
       .then((res) => {
         if (active) {
-          setSuggestions(res.data || [])
-          setIsOpen(true)
+          if (Array.isArray(res.data) && res.data.length > 0) {
+            setSuggestions(res.data)
+            setIsOpen(true)
+          } else {
+            fallbackMatch()
+          }
         }
       })
       .catch(() => {
-        if (active) setSuggestions([])
+        if (active) fallbackMatch()
       })
       .finally(() => {
         if (active) setLoading(false)

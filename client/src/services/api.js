@@ -1,7 +1,10 @@
 import axios from 'axios'
 
+// If VITE_API_URL is defined, use it, else default to /api
+const baseURL = import.meta.env.VITE_API_URL || '/api'
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL,
   headers: { 'Content-Type': 'application/json' },
 })
 
@@ -12,12 +15,19 @@ api.interceptors.request.use((config) => {
 })
 
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    // If the server returned HTML instead of JSON (common when SPA redirects 404 to index.html),
+    // treat it as an error so components can safely fall back to static/cached data.
+    if (typeof res.data === 'string' && (res.data.includes('<!DOCTYPE html>') || res.data.includes('<html'))) {
+      return Promise.reject(new Error('HTML response returned instead of JSON API data'))
+    }
+    return res
+  },
   (err) => {
     if (err.response?.status === 401) {
       localStorage.removeItem('freshkart_token')
       localStorage.removeItem('freshkart_user')
-      if (window.location.pathname !== '/login') {
+      if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
         window.location.href = '/login'
       }
     }

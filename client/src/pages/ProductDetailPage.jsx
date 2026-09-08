@@ -17,6 +17,8 @@ import { addToWishlist, removeFromWishlist } from '../store/slices/wishlistSlice
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed'
 import api from '../services/api'
 
+import { FALLBACK_PRODUCTS } from '../data/fallbackData'
+
 export default function ProductDetailPage() {
   const { slug } = useParams()
   const dispatch = useDispatch()
@@ -32,13 +34,30 @@ export default function ProductDetailPage() {
   useEffect(() => {
     setLoading(true)
     setError(null)
+
+    const findFallback = () => {
+      const match =
+        FALLBACK_PRODUCTS.find((p) => p.slug === slug || p._id === slug) ||
+        FALLBACK_PRODUCTS[0]
+      if (match) {
+        setProduct(match)
+        addToViewed(match)
+      } else {
+        setError('Product not found')
+      }
+    }
+
     api.get(`/products/${slug}`)
       .then((res) => {
-        setProduct(res.data)
-        addToViewed(res.data)
+        if (res.data && typeof res.data === 'object' && res.data.name) {
+          setProduct(res.data)
+          addToViewed(res.data)
+        } else {
+          findFallback()
+        }
       })
-      .catch((err) => {
-        setError(err.response?.data?.message || 'Product not found')
+      .catch(() => {
+        findFallback()
       })
       .finally(() => setLoading(false))
   }, [slug])
