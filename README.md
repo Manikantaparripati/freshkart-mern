@@ -367,7 +367,7 @@ npm run seed
 
 This creates:
 - 8 categories
-- 30+ products
+- 96 authentic Indian food products across 8 categories (12 products per category)
 - 2 demo users
 - 5 coupons
 - Sample orders and reviews
