@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { X, ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { removeItem, updateQuantity } from '../../store/slices/cartSlice'
+import { FOOD_FALLBACK_SVG } from '../../utils/imageUtils'
 
 export default function CartDrawer({ isOpen, onClose }) {
   const dispatch = useDispatch()
@@ -60,7 +61,7 @@ export default function CartDrawer({ isOpen, onClose }) {
                   src={item.image}
                   alt={item.name}
                   className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                  onError={(e) => { e.target.src = 'https://placehold.co/80x80/F97316/white?text=Food' }}
+                  onError={(e) => { e.target.src = FOOD_FALLBACK_SVG }}
                 />
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-sm text-dark line-clamp-2">{item.name}</p>

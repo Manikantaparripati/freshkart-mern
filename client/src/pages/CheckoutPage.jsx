@@ -6,6 +6,7 @@ import { clearCart } from '../store/slices/cartSlice'
 import { CheckCircle, MapPin, Truck, CreditCard, ClipboardList } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../services/api'
+import { FOOD_FALLBACK_SVG } from '../utils/imageUtils'
 
 const STEPS = [
   { id: 1, label: 'Address', icon: MapPin },
@@ -238,7 +239,7 @@ export default function CheckoutPage() {
                   {items.map((item) => (
                     <div key={item.id} className="flex items-center gap-3">
                       <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover bg-gray-100"
-                        onError={(e) => { e.target.src = 'https://placehold.co/60x60/F97316/white?text=Food' }} />
+                        onError={(e) => { e.target.src = FOOD_FALLBACK_SVG }} />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-dark line-clamp-1">{item.name}</p>
                         <p className="text-xs text-gray-400">Qty: {item.quantity}</p>

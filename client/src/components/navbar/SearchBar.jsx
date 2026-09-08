@@ -3,6 +3,7 @@ import { Search, X, Loader2, ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useDebounce } from '../../hooks/useDebounce'
 import { FALLBACK_PRODUCTS } from '../../data/fallbackData'
+import { FOOD_FALLBACK_SVG } from '../../utils/imageUtils'
 import api from '../../services/api'
 
 export default function SearchBar() {
@@ -140,10 +141,10 @@ export default function SearchBar() {
                     className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-orange-50/60 transition group"
                   >
                     <img
-                      src={item.images?.[0] || 'https://placehold.co/60x60/F97316/white?text=Food'}
+                      src={item.images?.[0] || FOOD_FALLBACK_SVG}
                       alt={item.name}
                       className="w-10 h-10 rounded-lg object-cover bg-gray-100 flex-shrink-0"
-                      onError={(e) => { e.target.src = 'https://placehold.co/60x60/F97316/white?text=Food' }}
+                      onError={(e) => { e.target.src = FOOD_FALLBACK_SVG }}
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-dark truncate group-hover:text-primary-600 transition">

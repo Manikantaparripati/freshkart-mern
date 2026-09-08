@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 
+const FOOD_FALLBACK_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" fill="none"><rect width="600" height="600" fill="%23FAFAF9"/><circle cx="300" cy="270" r="110" fill="%23FED7AA" fill-opacity="0.45"/><path d="M250 240 C250 200, 350 200, 350 240 C350 300, 250 300, 250 240 Z" fill="%23F97316"/><path d="M225 320 C265 350, 335 350, 375 320" stroke="%23EA580C" stroke-width="8" stroke-linecap="round"/><text x="300" y="430" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="600" fill="%2378350F" text-anchor="middle">FreshKart Original</text></svg>`
+
 export default function ProductImageGallery({ images = [], productName = 'Product' }) {
-  const defaultPlaceholder = `https://placehold.co/600x600/F97316/white?text=${encodeURIComponent(
-    productName.slice(0, 15)
-  )}`
+  const defaultPlaceholder = FOOD_FALLBACK_SVG
   const safeImages = images && images.length > 0 ? images : [defaultPlaceholder]
   const [main, setMain] = useState(safeImages[0])
 
@@ -18,13 +18,15 @@ export default function ProductImageGallery({ images = [], productName = 'Produc
   return (
     <div className="flex flex-col gap-4">
       {/* Main Large Image */}
-      <div className="aspect-square bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 relative group">
+      <div className="aspect-square bg-stone-50 rounded-3xl overflow-hidden border border-stone-200/60 relative group shadow-inner">
         <img
           src={main}
           alt={productName}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
           onError={(e) => {
-            e.target.src = defaultPlaceholder
+            if (e.target.src !== defaultPlaceholder) {
+              e.target.src = defaultPlaceholder
+            }
           }}
         />
       </div>

@@ -14,6 +14,7 @@ import {
 import LoadingSpinner from '../../components/ui/LoadingSpinner'
 import toast from 'react-hot-toast'
 import api from '../../services/api'
+import { FOOD_FALLBACK_SVG } from '../../utils/imageUtils'
 
 const ORDER_STATUSES = [
   'Order Placed',
@@ -298,7 +299,7 @@ export default function AdminOrders() {
                     <div key={i} className="py-2.5 flex items-center justify-between gap-3 text-xs">
                       <div className="flex items-center gap-2.5">
                         <img
-                          src={item.image || 'https://placehold.co/50x50/F97316/white?text=Food'}
+                          src={item.image || FOOD_FALLBACK_SVG}
                           alt={item.name}
                           className="w-10 h-10 rounded-lg object-cover bg-gray-50"
                         />

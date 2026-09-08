@@ -1,5 +1,6 @@
 import { useRecentlyViewed } from '../../hooks/useRecentlyViewed'
 import { Link } from 'react-router-dom'
+import { FOOD_FALLBACK_SVG } from '../../utils/imageUtils'
 
 export default function RecentlyViewed() {
   const { recentlyViewed } = useRecentlyViewed()
@@ -21,7 +22,7 @@ export default function RecentlyViewed() {
                 src={product.images?.[0]}
                 alt={product.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                onError={(e) => { e.target.src = 'https://placehold.co/150x150/F97316/white?text=Food' }}
+                onError={(e) => { e.target.src = FOOD_FALLBACK_SVG }}
               />
             </div>
             <div className="p-2">

@@ -16,6 +16,7 @@ import OrderTracker from '../components/checkout/OrderTracker'
 import LoadingSpinner from '../components/ui/LoadingSpinner'
 import toast from 'react-hot-toast'
 import api from '../services/api'
+import { FOOD_FALLBACK_SVG } from '../utils/imageUtils'
 
 export default function OrderDetailPage() {
   const { id } = useParams()
@@ -172,11 +173,11 @@ export default function OrderDetailPage() {
                 {order.items?.map((item, idx) => (
                   <div key={idx} className="py-4 flex items-center gap-4 first:pt-0 last:pb-0">
                     <img
-                      src={item.image || 'https://placehold.co/80x80/F97316/white?text=Food'}
+                      src={item.image || FOOD_FALLBACK_SVG}
                       alt={item.name}
                       className="w-16 h-16 rounded-2xl object-cover bg-gray-50 border border-gray-100 flex-shrink-0"
                       onError={(e) => {
-                        e.target.src = 'https://placehold.co/80x80/F97316/white?text=Food'
+                        e.target.src = FOOD_FALLBACK_SVG
                       }}
                     />
                     <div className="flex-1 min-w-0">

@@ -42,17 +42,29 @@ export default function SearchPage() {
     if (sort) params.sort = sort
 
     const applyFallback = () => {
+      const lowerQ = q.toLowerCase()
       let match = FALLBACK_PRODUCTS.filter((p) =>
-        p.name.toLowerCase().includes(q.toLowerCase()) ||
-        p.category?.name.toLowerCase().includes(q.toLowerCase()) ||
-        p.tags?.some((t) => t.toLowerCase().includes(q.toLowerCase()))
+        p.name.toLowerCase().includes(lowerQ) ||
+        p.category?.name?.toLowerCase().includes(lowerQ) ||
+        p.tags?.some((t) => t.toLowerCase().includes(lowerQ)) ||
+        p.description?.toLowerCase().includes(lowerQ) ||
+        p.ingredients?.toLowerCase().includes(lowerQ)
       )
       if (sort === 'price') match.sort((a, b) => a.price - b.price)
-      if (sort === '-price') match.sort((a, b) => b.price - a.price)
-      if (sort === '-rating') match.sort((a, b) => b.rating - a.rating)
-      setProducts(match)
-      setTotal(match.length)
-      setPages(1)
+      else if (sort === '-price') match.sort((a, b) => b.price - a.price)
+      else if (sort === '-rating') match.sort((a, b) => (b.rating || 0) - (a.rating || 0))
+      else if (sort === '-numReviews') match.sort((a, b) => (b.numReviews || 0) - (a.numReviews || 0))
+      else if (sort === '-createdAt') match.sort((a, b) => (b.isNewArrival ? 1 : 0) - (a.isNewArrival ? 1 : 0))
+
+      const pageSize = 12
+      const totalCount = match.length
+      const totalPages = Math.ceil(totalCount / pageSize) || 1
+      const startIndex = (page - 1) * pageSize
+      const paginated = match.slice(startIndex, startIndex + pageSize)
+
+      setProducts(paginated)
+      setTotal(totalCount)
+      setPages(totalPages)
     }
 
     api.get('/products', { params })

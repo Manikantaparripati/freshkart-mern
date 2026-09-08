@@ -13,6 +13,7 @@ import {
 import LoadingSpinner from '../../components/ui/LoadingSpinner'
 import toast from 'react-hot-toast'
 import api from '../../services/api'
+import { FOOD_FALLBACK_SVG } from '../../utils/imageUtils'
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([])
@@ -69,7 +70,7 @@ export default function AdminProducts() {
       stock: 50,
       weight: '500g',
       ingredients: '',
-      image: 'https://placehold.co/600x600/F97316/white?text=New+Product',
+      image: '',
       isFeatured: false,
       isBestSeller: false,
       isNewArrival: true,
@@ -103,7 +104,7 @@ export default function AdminProducts() {
       price: Number(formData.price),
       originalPrice: Number(formData.originalPrice || formData.price),
       stock: Number(formData.stock),
-      images: [formData.image || 'https://placehold.co/600x600/F97316/white?text=Product'],
+      images: [formData.image || FOOD_FALLBACK_SVG],
     }
 
     try {
@@ -201,7 +202,7 @@ export default function AdminProducts() {
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {filteredProducts.map((p) => {
-                  const image = p.images?.[0] || 'https://placehold.co/60x60/F97316/white?text=Food'
+                  const image = p.images?.[0] || FOOD_FALLBACK_SVG
                   return (
                     <tr key={p._id} className="hover:bg-orange-50/30 transition">
                       <td className="p-4 flex items-center gap-3 min-w-[220px]">
@@ -210,7 +211,7 @@ export default function AdminProducts() {
                           alt={p.name}
                           className="w-12 h-12 rounded-xl object-cover bg-gray-50 border border-gray-100 flex-shrink-0"
                           onError={(e) => {
-                            e.target.src = 'https://placehold.co/60x60/F97316/white?text=Food'
+                            e.target.src = FOOD_FALLBACK_SVG
                           }}
                         />
                         <div className="min-w-0">

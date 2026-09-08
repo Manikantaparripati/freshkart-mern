@@ -69,11 +69,20 @@ export default function ProductsPage() {
       if (minPrice) filtered = filtered.filter((p) => p.price >= Number(minPrice))
       if (maxPrice) filtered = filtered.filter((p) => p.price <= Number(maxPrice))
       if (sort === 'price') filtered.sort((a, b) => a.price - b.price)
-      if (sort === '-price') filtered.sort((a, b) => b.price - a.price)
-      if (sort === '-rating') filtered.sort((a, b) => b.rating - a.rating)
-      setProducts(filtered)
-      setTotal(filtered.length)
-      setPages(1)
+      else if (sort === '-price') filtered.sort((a, b) => b.price - a.price)
+      else if (sort === '-rating') filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0))
+      else if (sort === '-numReviews') filtered.sort((a, b) => (b.numReviews || 0) - (a.numReviews || 0))
+      else if (sort === '-createdAt') filtered.sort((a, b) => (b.isNewArrival ? 1 : 0) - (a.isNewArrival ? 1 : 0))
+
+      const pageSize = 12
+      const totalCount = filtered.length
+      const totalPages = Math.ceil(totalCount / pageSize) || 1
+      const startIndex = (page - 1) * pageSize
+      const paginated = filtered.slice(startIndex, startIndex + pageSize)
+
+      setProducts(paginated)
+      setTotal(totalCount)
+      setPages(totalPages)
     }
 
     // If we have a category slug, resolve it first

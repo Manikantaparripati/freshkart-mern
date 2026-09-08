@@ -5,6 +5,7 @@ import { addItem } from '../../store/slices/cartSlice'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { FALLBACK_PRODUCTS } from '../../data/fallbackData'
+import { FOOD_FALLBACK_SVG } from '../../utils/imageUtils'
 import api from '../../services/api'
 
 export default function FrequentlyBoughtTogether({ categoryId, currentProductId }) {
@@ -71,7 +72,7 @@ export default function FrequentlyBoughtTogether({ categoryId, currentProductId 
                   alt={product.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                   onError={(e) => {
-                    e.target.src = 'https://placehold.co/80x80/F97316/white?text=Food'
+                    e.target.src = FOOD_FALLBACK_SVG
                   }}
                 />
               </div>

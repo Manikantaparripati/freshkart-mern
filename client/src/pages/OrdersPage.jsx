@@ -5,6 +5,7 @@ import { Package, ArrowRight, Calendar, CreditCard, ChevronRight } from 'lucide-
 import LoadingSpinner from '../components/ui/LoadingSpinner'
 import EmptyState from '../components/ui/EmptyState'
 import api from '../services/api'
+import { FOOD_FALLBACK_SVG } from '../utils/imageUtils'
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([])
@@ -125,11 +126,11 @@ export default function OrdersPage() {
                       {order.items?.slice(0, 4).map((item, idx) => (
                         <div key={idx} className="relative flex-shrink-0 group">
                           <img
-                            src={item.image || 'https://placehold.co/60x60/F97316/white?text=Food'}
+                            src={item.image || FOOD_FALLBACK_SVG}
                             alt={item.name}
                             className="w-14 h-14 rounded-xl object-cover border border-gray-100 bg-gray-50"
                             onError={(e) => {
-                              e.target.src = 'https://placehold.co/60x60/F97316/white?text=Food'
+                              e.target.src = FOOD_FALLBACK_SVG
                             }}
                           />
                           <span className="absolute -top-1.5 -right-1.5 bg-dark text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">

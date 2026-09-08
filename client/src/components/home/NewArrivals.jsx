@@ -18,13 +18,13 @@ export default function NewArrivals() {
           if (Array.isArray(res.data) && res.data.length > 0) {
             setProducts(res.data)
           } else {
-            setProducts(FALLBACK_PRODUCTS.filter((p) => p.isNewArrival).slice(0, 4))
+            setProducts(FALLBACK_PRODUCTS.filter((p) => p.isNewArrival).slice(0, 8))
           }
         }
       })
       .catch(() => {
         if (isMounted) {
-          setProducts(FALLBACK_PRODUCTS.filter((p) => p.isNewArrival).slice(0, 4))
+          setProducts(FALLBACK_PRODUCTS.filter((p) => p.isNewArrival).slice(0, 8))
         }
       })
       .finally(() => {
@@ -38,7 +38,7 @@ export default function NewArrivals() {
 
   const displayList = Array.isArray(products) && products.length > 0
     ? products
-    : FALLBACK_PRODUCTS.filter((p) => p.isNewArrival).slice(0, 4)
+    : FALLBACK_PRODUCTS.filter((p) => p.isNewArrival).slice(0, 8)
 
   return (
     <section className="py-12">

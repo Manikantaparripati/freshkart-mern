@@ -3,6 +3,7 @@ import HeroSection from '../components/home/HeroSection'
 import FeaturedCategories from '../components/home/FeaturedCategories'
 import BestSellers from '../components/home/BestSellers'
 import NewArrivals from '../components/home/NewArrivals'
+import CategoryShowcase from '../components/home/CategoryShowcase'
 import SpecialOffers from '../components/home/SpecialOffers'
 import WhyChooseUs from '../components/home/WhyChooseUs'
 import CustomerReviews from '../components/home/CustomerReviews'
@@ -37,8 +38,44 @@ export default function HomePage() {
           <HeroSection />
           <FeaturedCategories />
           <BestSellers />
-          <NewArrivals />
+          
+          {/* Category Showcases */}
+          <CategoryShowcase
+            title="Trending Snacks & Savouries"
+            subtitle="Handcrafted South & North Indian crisps, murukkus, and tea-time crunch"
+            categorySlug="snacks"
+            icon="🥨"
+            limit={4}
+          />
+
           <SpecialOffers />
+
+          <CategoryShowcase
+            title="Authentic Pickles & Chutneys"
+            subtitle="Sun-cured traditional recipes slow-simmered in cold-pressed mustard & sesame oils"
+            categorySlug="pickles"
+            icon="🥭"
+            limit={4}
+          />
+
+          <NewArrivals />
+
+          <CategoryShowcase
+            title="Artisanal Sweets & Mithai"
+            subtitle="Decadent sweets crafted with 100% pure desi cow ghee, saffron, and rich dry fruits"
+            categorySlug="sweets"
+            icon="🍯"
+            limit={4}
+          />
+
+          <CategoryShowcase
+            title="Premium Dry Fruits & Nuts"
+            subtitle="Naturally nutrient-rich California almonds, Goan cashews, and Afghan figs"
+            categorySlug="dry-fruits"
+            icon="🥜"
+            limit={4}
+          />
+
           <WhyChooseUs />
           <CustomerReviews />
           <Newsletter />

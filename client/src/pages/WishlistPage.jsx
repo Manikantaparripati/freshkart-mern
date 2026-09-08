@@ -7,6 +7,7 @@ import { addItem } from '../store/slices/cartSlice'
 import EmptyState from '../components/ui/EmptyState'
 import RatingStars from '../components/product/RatingStars'
 import toast from 'react-hot-toast'
+import { FOOD_FALLBACK_SVG } from '../utils/imageUtils'
 
 export default function WishlistPage() {
   const { items } = useSelector((s) => s.wishlist)
@@ -88,9 +89,7 @@ export default function WishlistPage() {
               const image =
                 product.images?.[0] ||
                 product.image ||
-                `https://placehold.co/300x300/F97316/white?text=${encodeURIComponent(
-                  product.name || 'Food'
-                )}`
+                FOOD_FALLBACK_SVG
 
               return (
                 <div
@@ -105,7 +104,7 @@ export default function WishlistPage() {
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
-                          e.target.src = 'https://placehold.co/300x300/F97316/white?text=Food'
+                          e.target.src = FOOD_FALLBACK_SVG
                         }}
                       />
                     </Link>
