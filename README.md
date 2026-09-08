@@ -12,7 +12,9 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[Live Demo](#) · [API Docs](#api-documentation) · [Report Bug](#) · [Request Feature](#)
+[![Deploy with Vercel](https://vercel.com/button)](https://freshkart-mern.vercel.app)
+
+[🌐 Live Demo on Vercel](https://freshkart-mern.vercel.app) · [📦 GitHub Repository](https://github.com/Manikantaparripati/freshkart-mern) · [📖 Analysis Proposal](ASSIGNMENT_ANALYSIS.md)
 
 </div>
 
